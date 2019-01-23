@@ -6,7 +6,7 @@ import LoginPage from './components/LoginPage';
 export default class App extends PureComponent {
   render() {
     return (
-      <div>
+      <div  className="ui container">
         <Route path='/' exact component={HomePage}/>
         <Route path='/login' component={LoginPage}/>
       </div>
