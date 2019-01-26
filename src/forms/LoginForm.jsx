@@ -5,7 +5,7 @@ import Validator from 'validator'
 import InlineError from '../messages/InlineError';
 
 
-class LoginForm extends React.Component {
+class LoginForm extends Component {
     state = {
       data: {
         email: "",
@@ -27,9 +27,10 @@ class LoginForm extends React.Component {
         this.setState({ loading: true });
         this.props
         .submit(this.state.data)
-        .catch(err =>
-          this.setState({ errors: err.response.data.errors, loading: false })
-        );
+        .catch(err => {
+          console.log("reached error handler", err)
+          return this.setState({ errors: err.response.data.errors, loading: false })
+        });
       }
     };
   

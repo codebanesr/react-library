@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+var mongoose = require('mongoose')
+var bcrypt = require('bcrypt')
 
 // todo : add unique key to email field
 const schema = new mongoose.Schema({
@@ -13,8 +13,22 @@ const schema = new mongoose.Schema({
 
 // this.passwordHash is the password hash in the database
 schema.methods.isValidPassword = function isValidPassword(password){
-    return bcrypt.compareSync(password, this.passwordHash)
+    console.log(bcrypt.compareSync(password, this.passwordHash))
+    return bcrypt.compareSync(password, this.passwordHash);
 }
 
 
-export default mongoose.model('User', schema)
+schema.methods.toAuthJSON = function toAuthJSON() {
+    return {
+        email: this.email,
+        token: this.generateJWT()
+    }
+}
+
+schema.methods.generateJWT = function generateJWT(){
+    return jwt.sign({
+        email: this.email
+    }, process.env.JWT_SECRET)
+}
+
+module.exports = mongoose.model('User', schema)
