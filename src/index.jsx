@@ -15,7 +15,10 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 ReactDOM.render(
     <BrowserRouter>
-        <App />
+        <Provider store={store}>
+            <App />
+        </Provider>
+
     </BrowserRouter>
     , document.getElementById('root')
 );
