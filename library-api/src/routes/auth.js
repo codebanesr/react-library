@@ -15,8 +15,6 @@ router.post("/", (req, res) => {
 });
 
 
-
-
 router.post("/confirmation", (req, res) => {
   const token = req.body.token;
   User.findOneAndUpdate(
@@ -29,7 +27,7 @@ router.post("/confirmation", (req, res) => {
 })
 
 
-router.post('/reset_password_token', (req, res)=>{
+router.post('/reset_password_request', (req, res)=>{
   const { password, token } = req.body.data;
   // token here is the reset token not the jwt token
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -39,5 +37,39 @@ router.post('/reset_password_token', (req, res)=>{
       res.json({})
     }
   })
+});
+
+
+router.post("/reset_password", (req, res)=> {
+  // this is the reset token and new password
+  const {password, token} = req.body.data;
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded)=>{
+    if(err) {
+      res.status(401).json({ errors: { global: "Invalid Token" }})
+    }else{
+      User.findOne({}).then(user=>{
+        if(user){
+          user.setPassword(password);
+          user.save().then(()=> res.json())
+        } else {
+          res.status(404).json({errors: {global: "Invalid Token"}})
+        }
+      })
+    }
+  });
 })
+
+
+router.post("/validate_token", (req, res)=>{
+  jwt.verify(req.body.token, process.env.JWT_SECRET, err=>{
+    if(err){
+      res.status(400).json({})
+    } else {
+      res.json({})
+    }
+  })
+})
+
+
 export default router;
